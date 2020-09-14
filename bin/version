@@ -1,0 +1,3 @@
+#!/bin/env bash
+
+grep '(defproject clojupyter-plugin/leaflet' project.clj | sed 's/.\+"\(.\+\)"/\1/g'

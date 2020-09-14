@@ -1,0 +1,91 @@
+#!/bin/env bash
+
+USER_LIB_PATH=$(if [[ $(uname -s) == Darwin ]]; then
+                  echo $HOME/Library
+              else
+                  echo $HOME/.local/lib
+              fi)
+
+SYSTEM_LIB_PATH=$(if [[ $(uname -s) == Darwin ]]; then
+                  echo /usr/lib
+              else
+                  echo /usr/local/lib
+              fi)
+
+IDENT=leaflet-$($(dirname $0)/version)
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --identity|-i)
+        IDENT=$2
+        shift
+        shift
+        ;;
+        *)
+        KERNEL=$1
+        shift
+        ;;
+    esac
+done
+
+[[ -w $SYSTEM_LIB_PATH/$KERNEL/plugins && -w $SYSTEM_LIB_PATH/$KERNEL/lib ]] &&\
+LIBDIR=$SYSTEM_LIB_PATH/$KERNEL
+[[ -w $USER_LIB_PATH/$KERNEL/plugins && -w $USER_LIB_PATH/$KERNEL/lib ]] &&\
+LIBDIR=$USER_LIB_PATH/$KERNEL
+
+[[ -z $LIBDIR ]] &&\
+{ echo Can\'t write to $LIBDIR directory >&2;
+  exit 10; }
+
+meta-deps() {
+
+    CP=$(unzip -p $1 META-INF/MANIFEST.MF |\
+         while read line; do
+            if [[ $line =~ ^Class-Path: ]]; then
+                if [[ $line =~ \.jar[[:space:]]*$ ]]; then
+                    echo "${line//Class-Path:/} "
+                else
+                    echo "${line//Class-Path:/}"
+                fi
+            elif [[ $line =~ ^[^:]+$ ]]; then
+                if [[ $line =~ \.jar[[:space:]]*$ ]]; then
+                    echo "${line} "
+                else
+                    echo "$line"
+                fi
+            else
+                continue
+            fi
+        done)
+
+    for jar in $(echo "$CP" | tr -d '\n' | tr -d '\r'); do
+        path=$(dirname $1)
+        echo $(realpath $path/$jar)
+    done
+}
+
+other_deps=$(for jar in $LIBDIR/$KERNEL.jar $LIBDIR/plugins/*.jar; do
+                [[ $jar == $LIBDIR/plugins/$IDENT.jar ]] && continue;
+                deps="$(meta-deps $jar)";
+                [[ $deps =~ $IDENT\.jar$ ]] &&\
+                { echo Can\'t uninstall $IDENT because $(basename ${jar:0:-4}) depends on it >&2;
+                  exit 20; }
+                echo "$deps";
+             done)
+ex=$?
+[[ $ex != 0 ]]  && exit $ex
+
+deps=$(meta-deps $LIBDIR/plugins/$IDENT.jar)
+
+extra_deps=$(comm -13 <(echo "$other_deps" | sort -u) <(echo "$deps" | sort -u) |\
+             grep -v $KERNEL.jar$)
+
+for dep in $extra_deps; do
+    rm $dep
+done
+
+rm $LIBDIR/plugins/$IDENT.jar
+rm $LIBDIR/plugins/enabled/$IDENT.jar 2>/dev/null
+rm $LIBDIR/lib/$IDENT.jar
+
+exit 0

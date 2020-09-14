@@ -1,0 +1,50 @@
+#!/bin/env bash
+
+USER_LIB_PATH=$(if [[ $(uname -s) == Darwin ]]; then
+                  echo $HOME/Library
+              else
+                  echo $HOME/.local/lib
+              fi)
+
+SYSTEM_LIB_PATH=$(if [[ $(uname -s) == Darwin ]]; then
+                  echo /usr/lib
+              else
+                  echo /usr/local/lib
+              fi)
+
+IDENT=leaflet-$($(dirname $0)/version)
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --identity|-i)
+        IDENT=$2
+        shift
+        shift
+        ;;
+        *)
+        KERNEL=$1
+        shift
+        ;;
+    esac
+done
+
+[[ -w $SYSTEM_LIB_PATH/$KERNEL/plugins && -w $SYSTEM_LIB_PATH/$KERNEL/lib ]] &&\
+LIBDIR=$SYSTEM_LIB_PATH/$KERNEL
+[[ -w $USER_LIB_PATH/$KERNEL/plugins && -w $USER_LIB_PATH/$KERNEL/lib ]] &&\
+LIBDIR=$USER_LIB_PATH/$KERNEL
+
+[[ -z $LIBDIR ]] &&\
+{ echo Can\'t write to $LIBDIR directory >&2;
+  exit 10; }
+
+[[ -f $LIBDIR/plugins/$IDENT.jar ]] &&\
+{ echo Plugin $IDENT is already installed under $KERNEL >&2;
+  exit 20; }
+
+cp target/plugins/$IDENT.jar $LIBDIR/plugins
+cp -nr target/lib $LIBDIR
+
+cd $LIBDIR/lib
+ln -s ../plugins/$IDENT.jar .
+
+exit 0
