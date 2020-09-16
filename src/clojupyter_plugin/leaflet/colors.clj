@@ -63,5 +63,3 @@
        (-> (list h (float (/ (- x v-min) (- v-max v-min))) v)
            hsv->rgb
            rgb->str)))))
-
-(def nothing nil)
