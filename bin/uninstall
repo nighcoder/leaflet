@@ -78,7 +78,7 @@ ex=$?
 deps=$(meta-deps $LIBDIR/plugins/$IDENT.jar)
 
 extra_deps=$(comm -13 <(echo "$other_deps" | sort -u) <(echo "$deps" | sort -u) |\
-             grep -v $KERNEL.jar$)
+             grep -v $KERNEL.jar$ | grep -v $LIBDIR/plugins/\.\*.jar$)
 
 for dep in $extra_deps; do
     rm $dep
