@@ -3,6 +3,7 @@
             [clojupyter-plugin.leaflet.colors :as col]
             [clojupyter-plugin.widgets.control :as inter]
             [clojupyter-plugin.widgets :as widget]
+            [clojupyter.kernel.comm-atom :as ca]
             [cheshire.core :as json]
             [clojure.java.io :as io]
             [clojure.walk :as walk]))
@@ -41,7 +42,7 @@
   (fn constructor
     [& {:as args}]
     (let [d-state (def-widget spec)
-          base (widget/base-widget d-state)]
+          base (ca/base-widget d-state)]
       (swap! base merge args)
       (if (= (get spec "name") "map")
         ;; Are we generating a map?
