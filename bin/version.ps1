@@ -1,1 +1,1 @@
-Select-String -Pattern '\(defproject clojupyter-plugin/widgets "(.+)"' -Path project.clj | % { $_.Matches.Groups[1].Value }
+Select-String -Pattern '\(defproject clojupyter-plugin/leaflet "(.+)"' -Path project.clj | % { $_.Matches.Groups[1].Value }
