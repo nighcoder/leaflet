@@ -41,6 +41,8 @@ LIBDIR=$USER_LIB_PATH/$KERNEL
 { echo Plugin $IDENT is already installed under $KERNEL >&2;
   exit 20; }
 
+echo "Installing plugin $IDENT under $KERNEL"
+
 cp target/plugins/$IDENT.jar $LIBDIR/plugins
 cp -nr target/lib $LIBDIR
 

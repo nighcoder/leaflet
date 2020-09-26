@@ -9,10 +9,10 @@
             [clojure.walk :as walk]))
 
 
-(def SPECS (-> "leaflet-schema.min.json"
-               io/resource
-               slurp
-               json/parse-string))
+(def ^:private SPECS (-> "leaflet-schema.min.json"
+                         io/resource
+                         slurp
+                         json/parse-string))
 
 (def BASE-MAPS
   (let [base-maps (json/parse-string (slurp (io/resource "basemaps.json")))
@@ -37,7 +37,7 @@
 
 (declare tile-layer zoom-control attribution-control geo-json)
 
-(defn make-widget
+(defn- make-widget
   [spec]
   (fn constructor
     [& {:as args}]

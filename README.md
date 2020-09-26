@@ -7,6 +7,7 @@ Interactive maps for clojupyter.
 (leaf/map :zoom 3 :center [-14 -75])
 ```
 The main widget of the package is `leaflet/map`. It includes other widgets that can't be displayed by themselves, such as map controls and layers.
+
 ### Base Maps
 The style of maps can by controlled by the `:basemap` attribute.
 The full list of supported base maps is available in `leaflet/BASE-MAPS` constant.
