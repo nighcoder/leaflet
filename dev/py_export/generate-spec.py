@@ -118,6 +118,10 @@ def jsonify(identifier, widget, widget_list):
             help=trait.help or '',
             default=jsdefault(trait)
         )
+
+        if identifier == 'attribution-control' and name == 'prefix':
+            attribute["default"] = "leaflet-0.1.0"
+
         attribute.update(trait_type(trait))
         attributes.append(attribute)
 
