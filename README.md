@@ -48,4 +48,7 @@ $ cd <clojupyter src dir>
 $ bin/enable-plugin -k <kernel identity> leaflet
 ```
 To view and interact with the models, you also need to install the right extension for your front end.
-For **jupyter notebook** install **ipyleaflet** plugin and for **jupyter lab** install **jupyter-leaflet** plugin.
+* **Jupyter Notebook** requires **ipyleaflet** plugin
+* **Jupyter Lab** requires **jupyter-leaflet**.
+
+See detailed instruction [here](https://github.com/jupyter-widgets/ipyleaflet#installation)

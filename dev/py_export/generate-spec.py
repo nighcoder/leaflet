@@ -44,13 +44,12 @@ classes = {
 "map": lf.Map, "map-style": lf.MapStyle, "search-control": lf.SearchControl, "legend-control": lf.LegendControl,
 "attribution-control": lf.AttributionControl, "scale-control": lf.ScaleControl, "zoom-control": lf.ZoomControl,
 "draw-control": lf.DrawControl, "split-map-control": lf.SplitMapControl, "measure-control": lf.MeasureControl,
-"full-screen-control": lf.FullScreenControl, "widget-control": lf.WidgetControl,
-"choropleth": lf.Choropleth, "geo-json": lf.GeoJSON, "feature-group": lf.FeatureGroup,
-"layer-group": lf.LayerGroup, "marker-cluster": lf.MarkerCluster, "circle": lf.Circle, "circle-marker": lf.CircleMarker,
+"full-screen-control": lf.FullScreenControl, "widget-control": lf.WidgetControl, "choropleth": lf.Choropleth,
+"geo-json": lf.GeoJSON, "marker-cluster": lf.MarkerCluster, "circle": lf.Circle, "circle-marker": lf.CircleMarker,
 "rectangle": lf.Rectangle, "polygon": lf.Polygon, "polyline": lf.Polyline, "ant-path": lf.AntPath,
 "vector-tile-layer": lf.VectorTileLayer, "heatmap": lf.Heatmap, "video-overlay": lf.VideoOverlay,
-"image-overlay": lf.ImageOverlay, "wms-layer": lf.WMSLayer, "local-tile-layer": lf.TileLayer, "tile-layer": lf.TileLayer,
-"popup": lf.Popup, "marker": lf.Marker, "awesome-icon": lf.AwesomeIcon, "icon": lf.Icon
+"image-overlay": lf.ImageOverlay, "wms-layer": lf.WMSLayer, "local-tile-layer": lf.TileLayer,
+"tile-layer": lf.TileLayer, "popup": lf.Popup, "marker": lf.Marker, "awesome-icon": lf.AwesomeIcon, "icon": lf.Icon
 }
 
 def trait_type(trait):
