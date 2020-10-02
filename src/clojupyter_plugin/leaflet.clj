@@ -15,7 +15,7 @@
                          json/parse-string))
 
 (def BASE-MAPS
-  (let [base-maps (json/parse-string (slurp (io/resource "basemaps.json")))
+  (let [base-maps (json/parse-string (slurp (io/resource "basemaps.min.json")))
         k-maps (for [[outer-key v] base-maps]
                  (if (contains? v "name")
                    {(csk/->kebab-case-keyword outer-key) (walk/keywordize-keys v)}
