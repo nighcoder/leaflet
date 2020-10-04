@@ -112,11 +112,18 @@ def jsonify(identifier, widget, widget_list):
             # don't document this since it is totally experimental at this point
             continue
 
-        attribute = dict(
-            name=name,
-            help=trait.help or '',
-            default=jsdefault(trait)
-        )
+        if name == 'options':
+            attribute = dict(
+                name=name,
+                help=trait.help or '',
+                default=widget._default_options()
+            )
+        else:
+            attribute = dict(
+                name=name,
+                help=trait.help or '',
+                default=jsdefault(trait)
+            )
 
         if identifier == 'attribution-control' and name == 'prefix':
             attribute["default"] = "leaflet-0.1.0"
@@ -163,6 +170,7 @@ if __name__ == '__main__':
 
     widgets_to_document = sorted([k, classes[k]] for k in classes)
     spec = create_spec(widgets_to_document)
+
     if args.basemaps:
         print(format_output(lf.basemaps, args.pretty))
     else:

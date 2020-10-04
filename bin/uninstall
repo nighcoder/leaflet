@@ -1,5 +1,9 @@
 #!/bin/env bash
 
+########################################################################################
+#  DEFAULTS
+########################################################################################
+
 USER_LIB_PATH=$(if [[ $(uname -s) == Darwin ]]; then
                   echo $HOME/Library
               else
@@ -12,7 +16,11 @@ SYSTEM_LIB_PATH=$(if [[ $(uname -s) == Darwin ]]; then
                   echo /usr/local/lib
               fi)
 
-IDENT=leaflet-$($(dirname $0)/version)
+IDENT=leaflet-$(bin/version)
+
+########################################################################################
+# ARGUMENTS
+########################################################################################
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -36,6 +44,10 @@ LIBDIR=$USER_LIB_PATH/$KERNEL
 [[ -z $LIBDIR ]] &&\
 { echo Can\'t write to $LIBDIR directory >&2;
   exit 10; }
+
+########################################################################################
+# DEPENDENCIES
+########################################################################################
 
 meta-deps() {
 
@@ -65,9 +77,9 @@ meta-deps() {
 }
 
 other_deps=$(for jar in $LIBDIR/$KERNEL.jar $LIBDIR/plugins/*.jar; do
-                [[ $jar == $LIBDIR/plugins/$IDENT.jar ]] && continue;
-                deps="$(meta-deps $jar)";
-                [[ $deps =~ $IDENT\.jar$ ]] &&\
+                [[ $jar == $LIBDIR/plugins/$IDENT.jar ]] && continue
+                deps=$(meta-deps $jar)
+                (echo "$deps" | grep $IDENT\.jar$) &&\
                 { echo Can\'t uninstall $IDENT because $(basename ${jar:0:-4}) depends on it >&2;
                   exit 20; }
                 echo "$deps";
@@ -79,6 +91,10 @@ deps=$(meta-deps $LIBDIR/plugins/$IDENT.jar)
 
 extra_deps=$(comm -13 <(echo "$other_deps" | sort -u) <(echo "$deps" | sort -u) |\
              grep -v $KERNEL.jar$ | grep -v $LIBDIR/plugins/\.\*.jar$)
+
+########################################################################################
+# UNINSTALLING
+########################################################################################
 
 for dep in $extra_deps; do
     rm $dep

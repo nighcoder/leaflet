@@ -1,5 +1,9 @@
 #!/bin/env bash
 
+########################################################################################
+#  DEFAULTS
+########################################################################################
+
 USER_LIB_PATH=$(if [[ $(uname -s) == Darwin ]]; then
                   echo $HOME/Library
               else
@@ -12,7 +16,11 @@ SYSTEM_LIB_PATH=$(if [[ $(uname -s) == Darwin ]]; then
                   echo /usr/local/lib
               fi)
 
-IDENT=leaflet-$($(dirname $0)/version)
+IDENT=leaflet-$(bin/version)
+
+########################################################################################
+# ARGUMENTS
+########################################################################################
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -33,6 +41,10 @@ LIBDIR=$SYSTEM_LIB_PATH/$KERNEL
 [[ -w $USER_LIB_PATH/$KERNEL/plugins && -w $USER_LIB_PATH/$KERNEL/lib ]] &&\
 LIBDIR=$USER_LIB_PATH/$KERNEL
 
+########################################################################################
+#  FAIL CONDITIONS
+########################################################################################
+
 [[ -z $LIBDIR ]] &&\
 { echo Can\'t write to $LIBDIR directory >&2;
   exit 10; }
@@ -40,6 +52,10 @@ LIBDIR=$USER_LIB_PATH/$KERNEL
 [[ -f $LIBDIR/plugins/$IDENT.jar ]] &&\
 { echo Plugin $IDENT is already installed under $KERNEL >&2;
   exit 20; }
+
+########################################################################################
+#  INSTALLING
+########################################################################################
 
 echo "Installing plugin $IDENT under $KERNEL"
 

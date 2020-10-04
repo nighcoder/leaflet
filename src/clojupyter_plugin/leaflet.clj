@@ -26,13 +26,11 @@
 
 (defn def-widget
   [{attributes "attributes"}]
-  (let [all-attrs (->> attributes (clojure.core/map #(get % "name")) (clojure.core/map keyword) (filterv (complement #{:layers :crs})))]
-    (reduce merge
-      (for [{name "name" default "default" type "type"} attributes]
-        {(keyword name) (cond
-                          (= name "options") all-attrs
-                          (= type "reference") nil
-                          :else default)}))))
+  (reduce merge
+    (for [{name "name" default "default" type "type"} attributes]
+      {(keyword name) (cond
+                        (= type "reference") nil
+                        :else default)})))
 
 
 (declare tile-layer zoom-control attribution-control geo-json)
