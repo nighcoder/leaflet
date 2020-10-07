@@ -36,7 +36,7 @@ if (!$LibDir) {
     exit 10
 }
 
-if (Test-Path -PathType Leaf "$LibDir\plugins\$idenity.jar") {
+if (Test-Path -PathType Leaf "$LibDir\plugins\$identity.jar") {
     Write-Error "Plugin $identity is already installed under $kernel"
     exit 20
 }

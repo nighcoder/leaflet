@@ -45,6 +45,8 @@ if (! $(Test-Path -PathType Leaf "$LibDir\plugins\$identity.jar")) {
 #  DEPENDENCIES
 ########################################################################################
 
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+
 function Get-Dependencies {
     Param (
         $jar
@@ -93,7 +95,7 @@ $deps = Get-Dependencies $(Get-ChildItem "$LibDir\plugins\$identity.jar") |
 $other_deps = @()
 foreach ($jar in $(Get-ChildItem -Exclude "$identity.jar" "$LibDir\$kernel.jar", "$LibDir\plugins\*")) {
     $dep = Get-Dependencies $jar
-    if ($dep -Contains "$LibDir\plugins\$identity.jar") {
+    if ($dep.Basename -Contains $identity.jar) {
         Write-Error "Can't uninstall $identity bacause $($jar.Basename) depends on it."
         exit 20
     }
