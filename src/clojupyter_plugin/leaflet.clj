@@ -24,7 +24,7 @@
                        {(csk/->kebab-case-keyword (str outer-key inner-key)) (walk/keywordize-keys vv)}))))]
     (reduce merge k-maps)))
 
-(defn def-widget
+(defn- def-widget
   [{attributes "attributes"}]
   (reduce merge
     (for [{name "name" default "default" type "type"} attributes]
@@ -32,8 +32,16 @@
                         (= type "reference") nil
                         :else default)})))
 
+(declare tile-layer zoom-control attribution-control geo-json map-style)
 
-(declare tile-layer zoom-control attribution-control geo-json)
+(defn ->base-layer
+  [basemap date]
+  (let [bm_ (get BASE-MAPS basemap)
+        bm_ (if (clojure.string/includes? (:url bm_) "%s")
+              (update bm_ format date)
+              bm_)
+        bm_ (assoc bm_ :base true)]
+    (apply tile-layer (reduce concat (list* bm_)))))
 
 (defn- make-widget
   [spec]
@@ -44,29 +52,36 @@
       (swap! base merge args)
       (if (= (get spec "name") "map")
         ;; Are we generating a map?
-        (let [{:keys [basemap modisdate extra-controls?]
+        (let [{:keys [basemap modisdate extra-controls? layout style default_style dragging_style]
                :or {basemap :open-street-map-mapnik
                     modisdate (:modisdate d-state)
                     extra-controls? true}} args]
           (swap! base assoc :basemap basemap :extra-controls? extra-controls?)
+          (when-not layout
+            (swap! base assoc :layout (widget/layout)))
+          (when-not style
+            (swap! base assoc :style (map-style :cursor "hand")))
+          (when-not default_style
+            (swap! base assoc :default_style (map-style :cursor "hand")))
+          (when-not dragging_style
+            (swap! base assoc :dragging_style (map-style :cursor "grabbing")))
           (when extra-controls?
             (swap! base update :controls (comp vec concat) [(zoom-control) (attribution-control :position "bottomright")]))
           (when basemap
-            (let [{:keys [url] :as bm} (get BASE-MAPS basemap)
-                  date (if (= "yesterday" modisdate)
+            (let [date (if (= "yesterday" modisdate)
                          (doto (java.time.LocalDate/now)
                                (.minusDays 1)
                                (.toString))
                          modisdate)
-                  bm_ (apply tile-layer (reduce-kv (fn [acc k v]
-                                                     (concat acc [k (if (and (= k :url)
-                                                                             (clojure.string/includes? v "%s"))
-                                                                      (format v date)
-                                                                      v)]))
-                                               []
-                                               bm))]
+                  bm_ (->base-layer basemap date)]
               (swap! base update :layers #(into [bm_] %))))
-          ;; We might want to add map styles.
+          (add-watch base :internal-consistency
+            (fn [_ _ {old-basemap :basemap old-modisdate :modisdate} {new-basemap :basemap new-modisdate :modisdate}]
+              (when (or (not= old-basemap new-basemap)
+                        (not= old-modisdate new-modisdate))
+                (let [bm_ (->base-layer new-basemap new-modisdate)]
+                  (.close (first (:layers @base)))
+                  (swap! base update :layers #(into [bm_] (rest %)))))))
           base)
         ;; We are generating anything but a map
         base))))
