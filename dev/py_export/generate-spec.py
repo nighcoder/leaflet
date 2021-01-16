@@ -49,7 +49,7 @@ classes = {
 "rectangle": lf.Rectangle, "polygon": lf.Polygon, "polyline": lf.Polyline, "ant-path": lf.AntPath,
 "vector-tile-layer": lf.VectorTileLayer, "heatmap": lf.Heatmap, "video-overlay": lf.VideoOverlay,
 "image-overlay": lf.ImageOverlay, "wms-layer": lf.WMSLayer, "local-tile-layer": lf.TileLayer,
-"tile-layer": lf.TileLayer, "popup": lf.Popup, "marker": lf.Marker, "awesome-icon": lf.AwesomeIcon, "icon": lf.Icon
+"tile-layer": lf.TileLayer, "popup": lf.Popup, "marker": lf.Marker, "awesome-icon": lf.AwesomeIcon, "icon": lf.Icon, "magnifying-glass": lf.MagnifyingGlass, "div-icon": lf.DivIcon
 }
 
 def trait_type(trait):
