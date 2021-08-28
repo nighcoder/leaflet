@@ -1,10 +1,10 @@
 (defproject clojupyter-plugin/leaflet "0.1.1-SNAPSHOT"
-  :description "Clojupyter plugin"
+  :description "Interactive maps for clojupyter."
   :url "http://example.com/FIXME"
   :license {:name "MIT"}
 
-  :dependencies [[clojupyter "0.4.0"]
-                 [clojupyter-plugin/widgets "0.1.0"]
+  :dependencies [[org.clojars.nighcoder/clojupyter "0.4.1"]
+                 [clojupyter-plugin/widgets "0.1.1-SNAPSHOT"]
                  [camel-snake-kebab "0.4.1"]
                  [cheshire "5.10.0"]]
 
