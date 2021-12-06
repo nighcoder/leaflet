@@ -1,9 +1,9 @@
-(defproject org.clojars.nighcoder/leaflet "0.1.1"
+(defproject org.clojars.nighcoder/leaflet "0.1.2-SNAPSHOT"
   :description "Interactive maps for clojupyter."
   :url "https://github.com/nighcoder/leaflet"
   :license {:name "MIT"}
 
-  :dependencies [[org.clojars.nighcoder/clojupyter "0.4.1"]
+  :dependencies [[clojupyter/clojupyter "0.4.0-alpha0"]
                  [org.clojars.nighcoder/widgets "0.1.1"]
                  [camel-snake-kebab "0.4.1"]
                  [cheshire "5.10.0"]]
